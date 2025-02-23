@@ -5,7 +5,7 @@ body {
     justify-content: center;
     align-items: center;
     height: 100vh;
-    background-color: #87CEEB;
+    background-color: #007745;
     overflow: hidden;
 }
 
@@ -19,7 +19,7 @@ body {
 
 #startMenu, #settingsMenu, #gameOverMenu {
     text-align: center;
-    background-color: rgba(255, 255, 255, 0.9);
+    background-color: #D4A67C;
     padding: 20px;
     border-radius: 10px;
     width: 100%;
@@ -42,7 +42,12 @@ body {
     font-family: Arial, sans-serif;
 }
 
-#speedSlider, #birdSizeSlider {
+#settingsMenu label[for="soundToggle"] {
+    display: inline-block; /* "Sound:" and checkbox on same line */
+    margin-right: 10px; /* Space between label and checkbox */
+}
+
+#speedSlider, #cowSizeSlider, #hitRadiusSlider {
     width: 80%;
 }
 
@@ -55,6 +60,11 @@ body {
     color: white;
     border: none;
     border-radius: 5px;
+}
+
+#settingsMenu #backButton {
+    display: block; /* Force Back button onto a new line */
+    margin: 20px auto 0; /* Center it and add space above */
 }
 
 #startButton:hover, #settingsButton:hover, #backButton:hover, #playAgainButton:hover, #mainMenuButton:hover {

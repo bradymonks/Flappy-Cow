@@ -16,8 +16,10 @@ const startMenu = document.getElementById('startMenu');
 const settingsMenu = document.getElementById('settingsMenu');
 const speedSlider = document.getElementById('speedSlider');
 const speedValue = document.getElementById('speedValue');
-const birdSizeSlider = document.getElementById('birdSizeSlider');
-const birdSizeValue = document.getElementById('birdSizeValue');
+const cowSizeSlider = document.getElementById('cowSizeSlider');
+const cowSizeValue = document.getElementById('cowSizeValue');
+const hitRadiusSlider = document.getElementById('hitRadiusSlider');
+const hitRadiusValue = document.getElementById('hitRadiusValue');
 const soundToggle = document.getElementById('soundToggle');
 const startButton = document.getElementById('startButton');
 const settingsButton = document.getElementById('settingsButton');
@@ -29,19 +31,20 @@ const playAgainButton = document.getElementById('playAgainButton');
 const mainMenuButton = document.getElementById('mainMenuButton');
 const highScoreDisplay = document.getElementById('highScoreDisplay');
 
-// Load bird and background images
-const birdRegular = new Image();
-birdRegular.src = 'bird-regular.png';
-const birdFlapped = new Image();
-birdFlapped.src = 'bird-flapped.png';
+// Load cow and background images
+const cowRegular = new Image();
+cowRegular.src = 'cow-regular.png';
+const cowFlapped = new Image();
+cowFlapped.src = 'cow-flapped.png';
 const farmBackground = new Image();
 farmBackground.src = 'farm-background.png';
 
 // Game variables
-let bird = {
+let cow = {
     x: 50,
     y: canvas.height / 2,
-    radius: parseInt(birdSizeSlider.value),
+    radius: parseInt(cowSizeSlider.value), // Visual size
+    hitRadius: parseInt(hitRadiusSlider.value), // Collision size
     velocity: 0,
     gravity: 0.5,
     jump: -10,
@@ -71,16 +74,22 @@ speedSlider.addEventListener('input', () => {
     pipeSpeed = parseFloat(speedSlider.value);
 });
 
-// Update bird size display
-birdSizeSlider.addEventListener('input', () => {
-    birdSizeValue.textContent = birdSizeSlider.value;
-    bird.radius = parseInt(birdSizeSlider.value);
+// Update cow size display
+cowSizeSlider.addEventListener('input', () => {
+    cowSizeValue.textContent = cowSizeSlider.value;
+    cow.radius = parseInt(cowSizeSlider.value);
+});
+
+// Update hit radius display
+hitRadiusSlider.addEventListener('input', () => {
+    hitRadiusValue.textContent = hitRadiusSlider.value;
+    cow.hitRadius = parseInt(hitRadiusSlider.value);
 });
 
 // Pipe generation
 function generatePipe() {
-    const minTopHeight = bird.radius + 50;
-    const maxTopHeight = canvas.height - pipeGap - bird.radius - 50;
+    const minTopHeight = cow.hitRadius + 50; // Use hitRadius for pipe spacing
+    const maxTopHeight = canvas.height - pipeGap - cow.hitRadius - 50;
     const topHeight = Math.floor(Math.random() * (maxTopHeight - minTopHeight + 1)) + minTopHeight;
 
     pipes.push({
@@ -104,9 +113,9 @@ function updatePipes() {
         pipe.x -= pipeSpeed;
 
         if (
-            bird.x + bird.radius > pipe.x && 
-            bird.x - bird.radius < pipe.x + pipeWidth &&
-            (bird.y - bird.radius < pipe.topHeight || bird.y + bird.radius > canvas.height - pipe.bottomHeight)
+            cow.x + cow.hitRadius > pipe.x && 
+            cow.x - cow.hitRadius < pipe.x + pipeWidth &&
+            (cow.y - cow.hitRadius < pipe.topHeight || cow.y + cow.hitRadius > canvas.height - pipe.bottomHeight)
         ) {
             if (!gameOver) {
                 playSound(crashSound);
@@ -114,7 +123,7 @@ function updatePipes() {
             }
         }
 
-        if (pipe.x + pipeWidth < bird.x - bird.radius && !pipe.passed) {
+        if (pipe.x + pipeWidth < cow.x - cow.hitRadius && !pipe.passed) {
             score++;
             pipe.passed = true;
             playSound(pointSound);
@@ -131,19 +140,19 @@ function updatePipes() {
     }
 }
 
-// Bird movement and animation
-function updateBird() {
+// Cow movement and animation
+function updateCow() {
     if (!gameStarted) return;
-    bird.velocity += bird.gravity;
-    bird.y += bird.velocity;
+    cow.velocity += cow.gravity;
+    cow.y += cow.velocity;
 
-    bird.flapTimer += Math.abs(bird.velocity) * 0.02 + bird.flapSpeed;
-    if (bird.flapTimer >= 1) {
-        bird.flapTimer = 0;
-        bird.flapping = !bird.flapping;
+    cow.flapTimer += Math.abs(cow.velocity) * 0.02 + cow.flapSpeed;
+    if (cow.flapTimer >= 1) {
+        cow.flapTimer = 0;
+        cow.flapping = !cow.flapping;
     }
 
-    if (bird.y + bird.radius > canvas.height || bird.y - bird.radius < 0) {
+    if (cow.y + cow.hitRadius > canvas.height || cow.y - cow.hitRadius < 0) {
         if (!gameOver) {
             playSound(crashSound);
             gameOver = true;
@@ -166,7 +175,7 @@ function draw() {
         ctx.drawImage(farmBackground, backgroundX, 0, canvas.width, canvas.height);
         ctx.drawImage(farmBackground, backgroundX + canvas.width, 0, canvas.width, canvas.height);
     } else {
-        ctx.fillStyle = '#87CEEB';
+        ctx.fillStyle = '#007745';
         ctx.fillRect(0, 0, canvas.width, canvas.height);
         ctx.fillStyle = '#8B4513';
         ctx.fillRect(0, canvas.height - 100, canvas.width, 100);
@@ -201,25 +210,24 @@ function draw() {
         ctx.strokeRect(pipe.x - 5, canvas.height - pipe.bottomHeight, pipeWidth + 10, capHeight);
     });
 
-    const birdImage = bird.flapping ? birdFlapped : birdRegular;
-    const birdSize = bird.radius * 2;
-    if (birdImage.complete) {
-        ctx.drawImage(birdImage, bird.x - bird.radius, bird.y - bird.radius, birdSize, birdSize);
+    const cowImage = cow.flapping ? cowFlapped : cowRegular;
+    const cowSize = cow.radius * 2;
+    if (cowImage.complete) {
+        ctx.drawImage(cowImage, cow.x - cow.radius, cow.y - cow.radius, cowSize, cowSize);
     } else {
         ctx.beginPath();
-        ctx.arc(bird.x, bird.y, bird.radius, 0, Math.PI * 2);
+        ctx.arc(cow.x, cow.y, cow.radius, 0, Math.PI * 2);
         ctx.fillStyle = 'yellow';
         ctx.fill();
         ctx.closePath();
     }
 
-    // Draw score with dynamic backdrop
-    ctx.font = '30px Arial'; // Set font before measuring
+    ctx.font = '30px Arial';
     const scoreText = `Score: ${score}`;
     const textWidth = ctx.measureText(scoreText).width;
-    ctx.fillStyle = '#D3D3D3'; // Light grey background
+    ctx.fillStyle = '#D4A67C';
     ctx.beginPath();
-    ctx.roundRect(5, 10, textWidth + 10, 40, 10); // Dynamic width + padding
+    ctx.roundRect(5, 10, textWidth + 10, 40, 10);
     ctx.fill();
     ctx.fillStyle = 'black';
     ctx.fillText(scoreText, 10, 40);
@@ -246,11 +254,12 @@ function playSound(sound) {
 
 // Reset game state for play again
 function resetGameForPlay() {
-    bird.y = canvas.height / 2;
-    bird.velocity = 0;
-    bird.radius = parseInt(birdSizeSlider.value);
-    bird.flapping = false;
-    bird.flapTimer = 0;
+    cow.y = canvas.height / 2;
+    cow.velocity = 0;
+    cow.radius = parseInt(cowSizeSlider.value);
+    cow.hitRadius = parseInt(hitRadiusSlider.value);
+    cow.flapping = false;
+    cow.flapTimer = 0;
     pipes = [];
     score = 0;
     gameOver = false;
@@ -263,11 +272,12 @@ function resetGameForPlay() {
 
 // Reset game state for main menu
 function resetGame() {
-    bird.y = canvas.height / 2;
-    bird.velocity = 0;
-    bird.radius = parseInt(birdSizeSlider.value);
-    bird.flapping = false;
-    bird.flapTimer = 0;
+    cow.y = canvas.height / 2;
+    cow.velocity = 0;
+    cow.radius = parseInt(cowSizeSlider.value);
+    cow.hitRadius = parseInt(hitRadiusSlider.value);
+    cow.flapping = false;
+    cow.flapTimer = 0;
     pipes = [];
     score = 0;
     gameOver = false;
@@ -285,7 +295,7 @@ function resetGame() {
 // Game loop
 function gameLoop() {
     if (gameStarted && !gameOver) {
-        updateBird();
+        updateCow();
         updatePipes();
         updateBackground();
     }
@@ -298,8 +308,8 @@ canvas.addEventListener('touchstart', (e) => {
     e.preventDefault();
     if (!gameStarted) return;
     if (!gameOver) {
-        bird.velocity = bird.jump;
-        bird.flapping = true;
+        cow.velocity = cow.jump;
+        cow.flapping = true;
         playSound(jumpSound);
     }
 });
@@ -311,7 +321,8 @@ startButton.addEventListener('click', () => {
     canvas.style.display = 'block';
     gameStarted = true;
     pipeSpeed = parseFloat(speedSlider.value);
-    bird.radius = parseInt(birdSizeSlider.value);
+    cow.radius = parseInt(cowSizeSlider.value);
+    cow.hitRadius = parseInt(hitRadiusSlider.value);
     playSound(backgroundMusic);
     generatePipe();
     lastPipeX = canvas.width;
