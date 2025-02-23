@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Flappy Bird</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div id="startMenu">
+        <h1>Flappy Bird</h1>
+        <p>High Score: <span id="highScoreDisplay">0</span></p>
+        <button id="startButton">Start Game</button>
+        <button id="settingsButton">Settings</button>
+    </div>
+    <div id="settingsMenu" style="display: none;">
+        <h2>Settings</h2>
+        <label for="speedSlider">Speed: <span id="speedValue">2</span></label>
+        <input type="range" id="speedSlider" min="1" max="5" value="2" step="0.5">
+        <label for="birdSizeSlider">Bird Size: <span id="birdSizeValue">20</span></label>
+        <input type="range" id="birdSizeSlider" min="10" max="30" value="20" step="1">
+        <label for="soundToggle">Sound: </label>
+        <input type="checkbox" id="soundToggle" checked>
+        <button id="backButton">Back</button>
+    </div>
+    <div id="gameOverMenu" style="display: none;">
+        <h2>Game Over</h2>
+        <p>Score: <span id="currentScore">0</span></p>
+        <p>High Score: <span id="highScoreGameOver">0</span></p>
+        <button id="playAgainButton">Play Again</button>
+        <button id="mainMenuButton">Main Menu</button>
+    </div>
+    <canvas id="gameCanvas"></canvas>
+    <audio id="backgroundMusic" loop>
+        <source src="background.mp3" type="audio/mpeg">
+    </audio>
+    <audio id="jumpSound">
+        <source src="jump.wav" type="audio/wav">
+    </audio>
+    <audio id="crashSound">
+        <source src="crash.wav" type="audio/wav">
+    </audio>
+    <audio id="pointSound">
+        <source src="point.wav" type="audio/wav">
+    </audio>
+    <script src="script.js"></script>
+</body>
+</html>
