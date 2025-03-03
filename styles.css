@@ -11,15 +11,10 @@ body {
 
 #gameCanvas {
     border: 1px solid black;
-    width: 100vw; /* Full viewport width */
-    max-width: 375px; /* Cap at original design width */
-    height: auto; /* Maintain aspect ratio */
-    max-height: 667px; /* Cap at original design height */
+    width: 100%;
+    max-width: 375px;
+    height: 667px;
     display: none;
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
 }
 
 #startMenu, #settingsMenu, #gameOverMenu {
@@ -48,8 +43,8 @@ body {
 }
 
 #settingsMenu label[for="soundToggle"] {
-    display: inline-block;
-    margin-right: 10px;
+    display: inline-block; /* "Sound:" and checkbox on same line */
+    margin-right: 10px; /* Space between label and checkbox */
 }
 
 #speedSlider, #cowSizeSlider, #hitRadiusSlider {
@@ -68,8 +63,8 @@ body {
 }
 
 #settingsMenu #backButton {
-    display: block;
-    margin: 20px auto 0;
+    display: block; /* Force Back button onto a new line */
+    margin: 20px auto 0; /* Center it and add space above */
 }
 
 #startButton:hover, #settingsButton:hover, #backButton:hover, #playAgainButton:hover, #mainMenuButton:hover {
